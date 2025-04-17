@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Click the Button Game</title>
+  <style>
+    body { text-align: center; font-family: Arial; }
+    #gameArea { width: 500px; height: 300px; border: 2px solid black; margin: 0 auto; position: relative; }
+    #target { position: absolute; width: 50px; height: 50px; cursor: pointer; }
+    #score { font-size: 20px; }
+    #gameOver { display: none; font-size: 24px; }
+  </style>
+</head>
+<body>
+  <h1>Click the Button!</h1>
+  <div id="gameArea">
+    <button id="target">Click!</button>
+  </div>
+  <p id="score">Score: 0 | Time: 10</p>
+  <div id="gameOver">
+    <p>Game Over! Final Score: <span id="finalScore">0</span></p>
+    <button onclick="startGame()">Play Again</button>
+  </div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 10;
+    let gameActive = false;
+    const target = document.getElementById('target');
+    const scoreDisplay = document.getElementById('score');
+    const gameOverScreen = document.getElementById('gameOver');
+    const finalScore = document.getElementById('finalScore');
+    const gameArea = document.getElementById('gameArea');
+
+    // Move button to random position
+    function moveTarget() {
+      const maxX = gameArea.offsetWidth - target.offsetWidth;
+      const maxY = gameArea.offsetHeight - target.offsetHeight;
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+      target.style.left = newX + 'px';
+      target.style.top = newY + 'px';
+    }
+
+    // Update score and move button on click
+    target.addEventListener('click', () => {
+      if (gameActive) {
+        score++;
+        scoreDisplay.textContent = `Score: ${score} | Time: ${timeLeft}`;
+        moveTarget();
+      }
+    });
+
+    // Start the game
+    function startGame() {
+      score = 0;
+      timeLeft = 10;
+      gameActive = true;
+      scoreDisplay.textContent = `Score: ${score} | Time: ${timeLeft}`;
+      gameOverScreen.style.display = 'none';
+      target.style.display = 'block';
+      moveTarget();
+
+      // Timer
+      const timer = setInterval(() => {
+        timeLeft--;
+        scoreDisplay.textContent = `Score: ${score} | Time: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          gameActive = false;
+          target.style.display = 'none';
+          gameOverScreen.style.display = 'block';
+          finalScore.textContent = score;
+        }
+      }, 1000);
+    }
+
+    // Start game on load
+    startGame();
+  </script>
+</body>
+</html>
